@@ -10,6 +10,7 @@ type Config struct {
 	MaxRequest    int    `env:"MAX_REQUEST"`
 	TimeLimit     int    `env:"TIME_LIMIT"`
 	BlockTime     int    `env:"BLOCK_TIME"`
+	ServerPort    int    `env:"SERVER_PORT"`
 }
 
 func LogConfig(path string) (*Config, error) {

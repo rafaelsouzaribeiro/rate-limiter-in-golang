@@ -15,8 +15,6 @@ type clientLimiter struct {
 }
 
 func RateLimitByIP(rps rate.Limit, burst int, ttl time.Duration) func(http.Handler) http.Handler {
-	//var mu sync.Mutex
-
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			//ip := extractIP(r)
