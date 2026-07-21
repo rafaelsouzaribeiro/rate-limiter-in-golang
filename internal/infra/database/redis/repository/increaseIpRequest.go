@@ -23,23 +23,3 @@ func (r *Redis) IncreaseIPRequest(ip string, seconds int) (int64, error) {
 
 	return total, nil
 }
-
-/*
-unc (r *Redis) IsIPBlocked(ip string) (bool, error) {
-    ctx := context.Background()
-    key := fmt.Sprintf("rl:%s:block", ip)
-
-    exists, err := r.client.Exists(ctx, key).Result()
-    if err != nil {
-        return false, err
-    }
-
-    return exists == 1, nil
-}
-
-func (r *Redis) BlockIP(ip string, blockSeconds int) error {
-    ctx := context.Background()
-    key := fmt.Sprintf("rl:%s:block", ip)
-
-    return r.client.Set(ctx, key, 1, time.Duration(blockSeconds)*time.Second).Err()
-}*/

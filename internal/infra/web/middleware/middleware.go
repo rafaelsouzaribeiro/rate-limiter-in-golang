@@ -4,37 +4,38 @@ import (
 	"net"
 	"net/http"
 	"strings"
-	"time"
 
-	"golang.org/x/time/rate"
+	"github.com/spf13/viper"
 )
 
-type clientLimiter struct {
-	limiter  *rate.Limiter
-	lastSeen time.Time
-}
+const limitMessage = "you have reached the maximum number of requests or actions allowed within a certain time frame"
 
-func (h *Middleware) RateLimitByIP(rps rate.Limit, burst int, ttl time.Duration) func(http.Handler) http.Handler {
+func (h *Middleware) RateLimitByIP() func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			//ip := extractIP(r)
+			ip := extractIP(r)
 
-			/*mu.Lock()
-			c, ok := clients[ip]
-			if !ok {
-				c = &clientLimiter{
-					limiter: rate.NewLimiter(rps, burst),
-				}
-				clients[ip] = c
-			}
-			c.lastSeen = time.Now()
-			allowed := c.limiter.Allow()
-			mu.Unlock()
-
-			if !allowed {
-				http.Error(w, "too many requests", http.StatusTooManyRequests)
+			blocked, err := h.usecase.IsIPBlocked(ip)
+			if err != nil {
+				http.Error(w, "internal server error", http.StatusInternalServerError)
 				return
-			}*/
+			}
+			if blocked {
+				http.Error(w, limitMessage, http.StatusTooManyRequests)
+				return
+			}
+
+			total, err := h.usecase.IncreaseIPRequest(ip, viper.GetInt("TIME_LIMIT")) // TIME_LIMIT
+			if err != nil {
+				http.Error(w, "internal server error", http.StatusInternalServerError)
+				return
+			}
+
+			if total > int64(viper.GetInt("MAX_REQUEST")) { // MAX_REQUEST
+				_ = h.usecase.BlockIp(ip, viper.GetInt("BLOCK_TIME")) // BLOCK_TIME
+				http.Error(w, limitMessage, http.StatusTooManyRequests)
+				return
+			}
 
 			next.ServeHTTP(w, r)
 		})
@@ -56,38 +57,3 @@ func extractIP(r *http.Request) string {
 	}
 	return host
 }
-
-/*const limitMessage = "you have reached the maximum number of requests or actions allowed within a certain time frame"
-
-func (h *Middleware) RateLimitByIP() func(http.Handler) http.Handler {
-    return func(next http.Handler) http.Handler {
-        return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-            ip := extractIP(r)
-
-            blocked, err := h.redisRepo.IsIPBlocked(ip)
-            if err != nil {
-                http.Error(w, "internal server error", http.StatusInternalServerError)
-                return
-            }
-            if blocked {
-                http.Error(w, limitMessage, http.StatusTooManyRequests)
-                return
-            }
-
-            total, err := h.redisRepo.IncreaseIPRequest(ip, h.timeLimit) // TIME_LIMIT
-            if err != nil {
-                http.Error(w, "internal server error", http.StatusInternalServerError)
-                return
-            }
-
-            if total > int64(h.maxRequest) { // MAX_REQUEST
-                _ = h.redisRepo.BlockIP(ip, h.blockTime) // BLOCK_TIME
-                http.Error(w, limitMessage, http.StatusTooManyRequests)
-                return
-            }
-
-            next.ServeHTTP(w, r)
-        })
-    }
-}
-*/
