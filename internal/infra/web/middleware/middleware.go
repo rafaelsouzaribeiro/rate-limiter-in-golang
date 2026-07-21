@@ -56,3 +56,38 @@ func extractIP(r *http.Request) string {
 	}
 	return host
 }
+
+/*const limitMessage = "you have reached the maximum number of requests or actions allowed within a certain time frame"
+
+func (h *Middleware) RateLimitByIP() func(http.Handler) http.Handler {
+    return func(next http.Handler) http.Handler {
+        return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+            ip := extractIP(r)
+
+            blocked, err := h.redisRepo.IsIPBlocked(ip)
+            if err != nil {
+                http.Error(w, "internal server error", http.StatusInternalServerError)
+                return
+            }
+            if blocked {
+                http.Error(w, limitMessage, http.StatusTooManyRequests)
+                return
+            }
+
+            total, err := h.redisRepo.IncreaseIPRequest(ip, h.timeLimit) // TIME_LIMIT
+            if err != nil {
+                http.Error(w, "internal server error", http.StatusInternalServerError)
+                return
+            }
+
+            if total > int64(h.maxRequest) { // MAX_REQUEST
+                _ = h.redisRepo.BlockIP(ip, h.blockTime) // BLOCK_TIME
+                http.Error(w, limitMessage, http.StatusTooManyRequests)
+                return
+            }
+
+            next.ServeHTTP(w, r)
+        })
+    }
+}
+*/
