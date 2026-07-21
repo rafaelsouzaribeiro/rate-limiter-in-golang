@@ -14,7 +14,7 @@ type clientLimiter struct {
 	lastSeen time.Time
 }
 
-func RateLimitByIP(rps rate.Limit, burst int, ttl time.Duration) func(http.Handler) http.Handler {
+func (h *Middleware) RateLimitByIP(rps rate.Limit, burst int, ttl time.Duration) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			//ip := extractIP(r)
