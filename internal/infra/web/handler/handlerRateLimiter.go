@@ -5,5 +5,5 @@ import (
 )
 
 func (h *Handler) RateLimiter(w http.ResponseWriter, r *http.Request) {
-	_, _ = w.Write([]byte("RateLimiter"))
+	_, _ = w.Write([]byte("Rate Limiter"))
 }

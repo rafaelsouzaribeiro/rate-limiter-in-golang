@@ -15,7 +15,7 @@ func NewDI() {
 	usecease := usecase.NewUsecase(repo)
 	handler := handler.NewHandler(*usecease)
 	server := server.NewServer(viper.GetString("SERVER_PORT"))
-	server.RegisterHandler("GET", handler.RateLimiter)
+	server.RegisterHandler("GET /rate-limiter", handler.RateLimiter)
 
 	if err := server.Start(); err != nil {
 		panic(err)
