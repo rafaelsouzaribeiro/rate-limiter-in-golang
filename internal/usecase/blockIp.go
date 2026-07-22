@@ -1,5 +1,7 @@
 package usecase
 
-func (u *Usecase) BlockIp(ip string, blockSeconds int) error {
-	return u.redisRepository.BlockIP(ip, blockSeconds)
+import "time"
+
+func (u *Usecase) BlockIp(ip string, blockDuration time.Duration) error {
+	return u.redisRepository.BlockIP(ip, blockDuration)
 }

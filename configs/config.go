@@ -7,9 +7,9 @@ import (
 type Config struct {
 	HostRedis     string `env:"HOST_REDIS"`
 	PasswordRedis string `env:"PASSWORD_REDIS"`
-	MaxRequest    int    `env:"MAX_REQUEST"`
-	TimeLimit     int    `env:"TIME_LIMIT"`
-	BlockTime     int    `env:"BLOCK_TIME"`
+	MaxRequest    string `env:"MAX_REQUEST"`
+	TimeLimit     string `env:"TIME_LIMIT"`
+	BlockTime     string `env:"BLOCK_TIME"`
 	ServerPort    int    `env:"SERVER_PORT"`
 }
 

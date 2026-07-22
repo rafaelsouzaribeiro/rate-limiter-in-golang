@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-func (r *Redis) IncreaseIPRequest(ip string, seconds int) (int64, error) {
+func (r *Redis) IncreaseIPRequest(ip string, duration time.Duration) (int64, error) {
 	ctx := context.Background()
 	key := fmt.Sprintf("%s:count", ip)
 
@@ -15,7 +15,7 @@ func (r *Redis) IncreaseIPRequest(ip string, seconds int) (int64, error) {
 		return 0, err
 	}
 
-	if err := r.client.Expire(ctx, key, time.Duration(seconds)*time.Second).Err(); err != nil {
+	if err := r.client.Expire(ctx, key, duration).Err(); err != nil {
 		return 0, err
 	}
 

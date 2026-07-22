@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/rafaelsouzaribeiro/rate-limiter-in-golang/pkg/duration"
 	"github.com/spf13/viper"
 )
 
@@ -24,14 +25,14 @@ func (h *Middleware) RateLimiter(next http.Handler) http.Handler {
 			return
 		}
 
-		total, err := h.usecase.IncreaseIPRequest(ip, viper.GetInt("TIME_LIMIT"))
+		total, err := h.usecase.IncreaseIPRequest(ip, duration.GetDuration(viper.GetString("TIME_LIMIT")))
 		if err != nil {
 			http.Error(w, "internal server error", http.StatusInternalServerError)
 			return
 		}
 
 		if total > int64(viper.GetInt("MAX_REQUEST")) {
-			_ = h.usecase.BlockIp(ip, viper.GetInt("BLOCK_TIME"))
+			_ = h.usecase.BlockIp(ip, duration.GetDuration(viper.GetString("BLOCK_TIME")))
 			http.Error(w, limitMessage, http.StatusTooManyRequests)
 			return
 		}
