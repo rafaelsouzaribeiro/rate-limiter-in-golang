@@ -49,9 +49,27 @@ func extractIP(r *http.Request) string {
 		return strings.TrimSpace(xrip)
 	}
 
-	host, _, err := net.SplitHostPort(r.RemoteAddr)
-	if err != nil {
-		return r.RemoteAddr
+	addr := r.RemoteAddr
+	if addr == "" {
+		return ""
 	}
-	return host
+
+	host, _, err := net.SplitHostPort(addr)
+	if err != nil {
+		host = addr
+	}
+
+	ip := net.ParseIP(host)
+	if ip == nil {
+		return host
+	}
+
+	if ip.IsLoopback() {
+		return "127.0.0.1"
+	}
+
+	if v4 := ip.To4(); v4 != nil {
+		return v4.String()
+	}
+	return ip.String()
 }
