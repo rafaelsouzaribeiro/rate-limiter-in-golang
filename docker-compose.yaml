@@ -2,8 +2,11 @@ services:
   redis:
     image: redis:alpine
     container_name: database
+    command: redis-server --requirepass ${PASSWORD_REDIS}
     ports:
       - "6379:6379"
+    env_file:
+      - .env
 
   app:
     build: .
