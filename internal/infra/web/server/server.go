@@ -23,9 +23,12 @@ func (s *Server) RegisterHandler(path string, handler http.HandlerFunc) {
 	s.handlers[path] = handler
 }
 
-func (s *Server) Start() error {
-	for path, handler := range s.handlers {
-		s.Mux.Handle(path, handler)
+func (s *Server) Start(handler http.Handler) error {
+	for path, h := range s.handlers {
+		s.Mux.Handle(path, h)
 	}
-	return http.ListenAndServe(fmt.Sprintf(":%s", s.addr), s.Mux)
+	if handler == nil {
+		handler = s.Mux
+	}
+	return http.ListenAndServe(fmt.Sprintf(":%s", s.addr), handler)
 }

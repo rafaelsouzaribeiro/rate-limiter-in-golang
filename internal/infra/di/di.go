@@ -18,9 +18,9 @@ func NewDI() {
 	server := server.NewServer(viper.GetString("SERVER_PORT"))
 	server.RegisterHandler("GET /rate-limiter", handler.RateLimiter)
 	middleware := middleware.NewMiddleware(usecease)
-	middleware.RateLimiter(server.Mux)
+	m := middleware.RateLimiter(server.Mux)
 
-	if err := server.Start(); err != nil {
+	if err := server.Start(m); err != nil {
 		panic(err)
 	}
 }
