@@ -1,4 +1,4 @@
-# Rate Limiter em Go
+# Rate Limiter em Go (MBA desafio técnico)
 
 ## Objetivo
 
