@@ -59,6 +59,11 @@ Isso irá subir dois serviços:
 
 ## Testando a aplicação
 
+Na Raiz execute os testes
+```sh
+go test ./...
+```
+
 Após subir a aplicação (local ou via Docker), faça requisições para o endpoint configurado:
 
 ```sh
