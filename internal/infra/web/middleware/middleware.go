@@ -13,9 +13,14 @@ func (h *Middleware) RateLimiter(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 		item := r.Header.Get("API_KEY")
-		total, err := h.CheckToken(item, w, r)
-		if err != nil {
-			return
+		var total int64
+		var err error
+
+		if item != "" {
+			total, err = h.CheckToken(item, w, r)
+			if err != nil {
+				return
+			}
 		}
 
 		if item == "" {
