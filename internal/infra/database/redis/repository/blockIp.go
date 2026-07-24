@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-func (r *Redis) BlockIP(ip string, blockDuration time.Duration) error {
+func (r *Redis) Block(ip string, blockDuration time.Duration) error {
 	ctx := context.Background()
 	key := fmt.Sprintf("%s:block", ip)
 

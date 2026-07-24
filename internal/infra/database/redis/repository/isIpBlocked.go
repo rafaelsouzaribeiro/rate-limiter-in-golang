@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-func (r *Redis) IsIPBlocked(ip string) (bool, error) {
+func (r *Redis) IsBlocked(ip string) (bool, error) {
 	ctx := context.Background()
 	key := fmt.Sprintf("%s:block", ip)
 

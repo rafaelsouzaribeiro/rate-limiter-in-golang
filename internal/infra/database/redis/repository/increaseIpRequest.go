@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-func (r *Redis) IncreaseIPRequest(ip string, duration time.Duration) (int64, error) {
+func (r *Redis) IncreaseRequest(ip string, duration time.Duration) (int64, error) {
 	ctx := context.Background()
 	key := fmt.Sprintf("%s:count", ip)
 

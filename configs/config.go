@@ -8,7 +8,7 @@ type Config struct {
 	HostRedis     string `env:"HOST_REDIS"`
 	PasswordRedis string `env:"PASSWORD_REDIS"`
 	MaxRequest    string `env:"MAX_REQUEST"`
-	TimeLimit     string `env:"TIME_LIMIT"`
+	IpLimit       string `env:"IP_LIMIT"`
 	BlockTime     string `env:"BLOCK_TIME"`
 	ServerPort    int    `env:"SERVER_PORT"`
 }

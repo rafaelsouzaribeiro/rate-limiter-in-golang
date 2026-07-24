@@ -4,14 +4,17 @@
 
 Rate Limiter em Go que funcione como um middleware para controlar o fluxo de requisições de um serviço web.
 
-O sistema é capaz de limitar o tráfego com base no IP do solicitante, utilizando o Redis para persistência e orquestração.
+O sistema deve ser capaz de limitar o tráfego com base no IP do solicitante ou em um Token de acesso, utilizando o Redis para persistência e orquestração.
+
+O token deve estar no header com a chave `API_KEY` e o valor do token
 
 ## Variáveis de ambiente
 
 | Variável         | Descrição                                          | Exemplo       |
 |------------------|-----------------------------------------------------|---------------|
 | `MAX_REQUEST`    | Número máximo de requisições permitidas             | `3`           |
-| `TIME_LIMIT`     | Janela de tempo para contagem das requisições       | `60s`         |
+| `IP_LIMIT`        | Janela de tempo para contagem das requisições       | `60s`         |
+| `TOKEN_LIMIT`        | Janela de tempo para contagem das requisições       | `60s`         |
 | `BLOCK_TIME`     | Tempo de bloqueio após exceder o limite             | `60s`         |
 | `HOST_REDIS`     | Host e porta do Redis                               | `localhost:6379` |
 | `PASSWORD_REDIS` | Senha de acesso ao Redis                            | `123mudar`    |
@@ -20,9 +23,10 @@ O sistema é capaz de limitar o tráfego com base no IP do solicitante, utilizan
 Exemplo de arquivo `.env`:
 
 ```dotenv
-MAX_REQUEST=3
-TIME_LIMIT=60s
-BLOCK_TIME=60s
+MAX_REQUEST=2
+IP_LIMIT=2s
+TOKEN_LIMIT=60s
+BLOCK_TIME=2m
 HOST_REDIS=localhost:6379
 PASSWORD_REDIS=123mudar
 SERVER_PORT=8080

@@ -1,9 +1,7 @@
 package middleware
 
 import (
-	"net"
 	"net/http"
-	"strings"
 
 	"github.com/rafaelsouzaribeiro/rate-limiter-in-golang/pkg/duration"
 	"github.com/spf13/viper"
@@ -13,64 +11,25 @@ const limitMessage = "you have reached the maximum number of requests or actions
 
 func (h *Middleware) RateLimiter(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		ip := extractIP(r)
 
-		blocked, err := h.usecase.IsIPBlocked(ip)
+		item := r.Header.Get("API_KEY")
+		total, err := h.CheckToken(item, w, r)
 		if err != nil {
-			http.Error(w, "internal server error", http.StatusInternalServerError)
-			return
-		}
-		if blocked {
-			http.Error(w, limitMessage, http.StatusTooManyRequests)
 			return
 		}
 
-		total, err := h.usecase.IncreaseIPRequest(ip, duration.GetDuration(viper.GetString("TIME_LIMIT")))
+		item = h.extractIP(r)
+		total, err = h.CheckIp(item, w, r)
 		if err != nil {
-			http.Error(w, "internal server error", http.StatusInternalServerError)
 			return
 		}
 
 		if total > int64(viper.GetInt("MAX_REQUEST")) {
-			_ = h.usecase.BlockIp(ip, duration.GetDuration(viper.GetString("BLOCK_TIME")))
+			_ = h.usecase.Block(item, duration.GetDuration(viper.GetString("BLOCK_TIME")))
 			http.Error(w, limitMessage, http.StatusTooManyRequests)
 			return
 		}
 
 		next.ServeHTTP(w, r)
 	})
-}
-
-func extractIP(r *http.Request) string {
-	if xff := r.Header.Get("X-Forwarded-For"); xff != "" {
-		parts := strings.Split(xff, ",")
-		return strings.TrimSpace(parts[0])
-	}
-	if xrip := r.Header.Get("X-Real-IP"); xrip != "" {
-		return strings.TrimSpace(xrip)
-	}
-
-	addr := r.RemoteAddr
-	if addr == "" {
-		return ""
-	}
-
-	host, _, err := net.SplitHostPort(addr)
-	if err != nil {
-		host = addr
-	}
-
-	ip := net.ParseIP(host)
-	if ip == nil {
-		return host
-	}
-
-	if ip.IsLoopback() {
-		return "127.0.0.1"
-	}
-
-	if v4 := ip.To4(); v4 != nil {
-		return v4.String()
-	}
-	return ip.String()
 }

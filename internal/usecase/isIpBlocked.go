@@ -1,5 +1,5 @@
 package usecase
 
-func (u *Usecase) IsIPBlocked(ip string) (bool, error) {
-	return u.redisRepository.IsIPBlocked(ip)
+func (u *Usecase) IsBlocked(ip string) (bool, error) {
+	return u.redisRepository.IsBlocked(ip)
 }
