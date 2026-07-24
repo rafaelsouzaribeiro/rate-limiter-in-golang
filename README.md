@@ -47,8 +47,7 @@ SERVER_PORT=8080
 
 ### Opção 2: Rodando com Docker Compose
 
-1. Crie um arquivo `.env` na raiz do projeto com as variáveis acima.
-2. Execute o Docker Compose:
+1. Execute o Docker Compose:
 
     ```sh
     docker compose up --build
