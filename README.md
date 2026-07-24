@@ -66,4 +66,4 @@ Após subir a aplicação (local ou via Docker), faça requisições para o endp
 curl -i http://localhost:8080/rate-limiter
 ```
 
-Se o limite de requisições (`MAX_REQUEST`) for excedido dentro da janela de tempo (`TIME_LIMIT`), a aplicação deverá retornar um erro de limite excedido e bloquear novas requisições pelo tempo definido em `BLOCK_TIME`.
+Se o limite de requisições (`MAX_REQUEST`) for excedido dentro da janela de tempo (`IP_LIMIT` ou `TOKEN_LIMIT`), a aplicação deverá retornar um erro de limite excedido e bloquear novas requisições pelo tempo definido em `BLOCK_TIME`.
