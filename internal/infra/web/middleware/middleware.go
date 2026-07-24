@@ -18,10 +18,12 @@ func (h *Middleware) RateLimiter(next http.Handler) http.Handler {
 			return
 		}
 
-		item = h.extractIP(r)
-		total, err = h.CheckIp(item, w, r)
-		if err != nil {
-			return
+		if item == "" {
+			item = h.extractIP(r)
+			total, err = h.CheckIp(item, w, r)
+			if err != nil {
+				return
+			}
 		}
 
 		if total > int64(viper.GetInt("MAX_REQUEST")) {
