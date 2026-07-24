@@ -54,7 +54,7 @@ func TestRateLimiter_AllowsRequestWithinLimit(t *testing.T) {
 		w.WriteHeader(http.StatusOK)
 	})
 
-	req := httptest.NewRequest(http.MethodGet, "/", nil)
+	req := httptest.NewRequest(http.MethodGet, "/rate-limiter", nil)
 	req.RemoteAddr = "127.0.0.1:1234"
 	rec := httptest.NewRecorder()
 
@@ -78,7 +78,7 @@ func TestRateLimiter_BlocksWhenIpIsBlocked(t *testing.T) {
 		nextCalled = true
 	})
 
-	req := httptest.NewRequest(http.MethodGet, "/", nil)
+	req := httptest.NewRequest(http.MethodGet, "/rate-limiter", nil)
 	req.RemoteAddr = "127.0.0.1:1234"
 	rec := httptest.NewRecorder()
 
@@ -105,7 +105,7 @@ func TestRateLimiter_BlocksAfterExceedingMaxRequests(t *testing.T) {
 		nextCalled = true
 	})
 
-	req := httptest.NewRequest(http.MethodGet, "/", nil)
+	req := httptest.NewRequest(http.MethodGet, "/rate-limiter", nil)
 	req.RemoteAddr = "127.0.0.1:1234"
 	rec := httptest.NewRecorder()
 
@@ -129,7 +129,7 @@ func TestRateLimiter_UsesApiKeyWhenPresent(t *testing.T) {
 		w.WriteHeader(http.StatusOK)
 	})
 
-	req := httptest.NewRequest(http.MethodGet, "/", nil)
+	req := httptest.NewRequest(http.MethodGet, "/rate-limiter", nil)
 	req.Header.Set("API_KEY", "my-token")
 	rec := httptest.NewRecorder()
 
